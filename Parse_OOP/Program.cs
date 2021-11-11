@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ParseResult = System.Tuple<Parse_OOP.Expression, int>;
 
 // Изменена система навигации
+// Добавлена функция удаления константы
 
 namespace Parse_OOP
 {
@@ -66,6 +67,7 @@ namespace Parse_OOP
             Console.Clear();
             Console.WriteLine("1 - Вывести список переменных");
             Console.WriteLine("2 - Создать новую переменную (изменить старую)");
+            Console.WriteLine("3 - Удалить переменную");
 
             Console.WriteLine("\nEsc - назад");
             ConsoleKey ki = Console.ReadKey(true).Key;
@@ -80,6 +82,10 @@ namespace Parse_OOP
             if (ki == ConsoleKey.Enter)
             {
                 DictionaryMenu();
+            }
+            else if (ki == ConsoleKey.D3 || ki == ConsoleKey.NumPad3)
+            {
+                RemoveConstant();
             }
             else if (ki == ConsoleKey.Escape)
             {
@@ -147,7 +153,38 @@ namespace Parse_OOP
             }
 
         }
+        
+        static void RemoveConstant()
+        {
+            Console.Clear();
+            Console.WriteLine($"Введите имя переменной которую хотите удалить");
+            string key = new string(Console.ReadLine());
+            if (constants.ContainsKey(key))
+            {
+                constants.Remove(key);
+                Console.WriteLine($"{key} был удален из списка констант");
+
+            }
+            else
+            {
+                Console.WriteLine($"{key} не содержиться в списке констант");
+            }
+
+            Console.WriteLine("\nEnter - повторить \nEsc - назад");
+            ConsoleKey ki = Console.ReadKey(true).Key;
+            if (ki == ConsoleKey.Enter)
+            {
+                RemoveConstant();
+            }
+            else if (ki == ConsoleKey.Escape)
+            {
+                DictionaryMenu();
+            }
+
+
+        }
     }
+
     
     class Token
     {
