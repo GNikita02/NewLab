@@ -3,7 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using ParseResult = System.Tuple<Parse_OOP.Expression, int>;
 
-// gggggg
+// Изменена система навигации
+
 namespace Parse_OOP
 {
     class Program
@@ -11,14 +12,11 @@ namespace Parse_OOP
         public static Dictionary<string, double> constants = new Dictionary<string, double>();
         static void Main(string[] args)
         {
-            constants.Add("Pi", 3.1415);
+            constants.Add("Pi", 3.141592653589793);
+            constants.Add("Tau", constants["Pi"] * 2);
             constants.Add("e", 2.718281828459045);
-            while (true)
-            {
-                menu();
-                if (Console.ReadKey(true).Key == ConsoleKey.Escape)
-                    break;
-            }
+            constants.Add("с", 299792458);
+            MainMenu();
         }
         static void test_expr(string expr)
         {
@@ -28,9 +26,69 @@ namespace Parse_OOP
             Console.WriteLine($"[Ответ] {evaluated}");
         }
 
-        static void dictionary()
-        {
 
+        static void MainMenu()
+        {
+            Console.Clear();
+            Console.WriteLine("Выберите действие");
+            Console.WriteLine("1 - Посчитать выражение");
+            Console.WriteLine("2 - Меню констант");
+            ConsoleKey ki = Console.ReadKey(true).Key;
+            if (ki == ConsoleKey.D1 || ki == ConsoleKey.NumPad1)
+            {
+                CalculatorMenu();
+            }
+            else if (ki == ConsoleKey.D2 || ki == ConsoleKey.NumPad2)
+            {
+                DictionaryMenu();
+            }
+        }
+        static void CalculatorMenu()
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("Введите пример на который желаете получить ответ");
+            test_expr(Console.ReadLine());
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("\nEnter - повторить \nEsc - назад");
+            ConsoleKey ki = Console.ReadKey(true).Key;
+            if (ki == ConsoleKey.Enter)
+            {
+                CalculatorMenu();
+            }
+            if (ki == ConsoleKey.Escape)
+            {
+                MainMenu();
+            }
+        }
+        static void DictionaryMenu()
+        {
+            Console.Clear();
+            Console.WriteLine("1 - Вывести список переменных");
+            Console.WriteLine("2 - Создать новую переменную (изменить старую)");
+
+            Console.WriteLine("\nEsc - назад");
+            ConsoleKey ki = Console.ReadKey(true).Key;
+            if (ki == ConsoleKey.D1 || ki == ConsoleKey.NumPad1)
+            {
+                ShowDictionary();
+            }
+            else if (ki == ConsoleKey.D2 || ki == ConsoleKey.NumPad2)
+            {
+                ChangeDictionary();
+            }
+            if (ki == ConsoleKey.Enter)
+            {
+                DictionaryMenu();
+            }
+            else if (ki == ConsoleKey.Escape)
+            {
+                MainMenu();
+            }
+        }
+
+        static void ChangeDictionary()
+        {
             Console.Clear();
             Console.WriteLine("Введите обозначение новой переменной");
             string key = Console.ReadLine();
@@ -43,61 +101,52 @@ namespace Parse_OOP
                 Console.WriteLine("Вы хотите присвоить новое значение данной переменной(Y/N)?");
                 if (Console.ReadKey(true).Key == ConsoleKey.Y)
                 {
+                    double oldValue = constants[key];
                     constants.Remove(key);
                     constants.Add(key, value);
-                    Console.WriteLine($"Данной переменной было присвоено новое значение {key} = {value} \nНажмите Enter для продолжения");
+                    Console.WriteLine($"Значение переменной <{key}> было изменено с <{oldValue}> на <{value}>");
                 }
                 else if (Console.ReadKey(true).Key == ConsoleKey.N)
                 {
-                    menu();
+                    ChangeDictionary();
                 }
             }
             else
             {
                 constants.Add(key, value);
-                Console.WriteLine($"Была создана новая константа {key} = {value}\nНажмите Enter для продолжения");
+                Console.WriteLine("Была создана новая константа\n");
             }
 
+            Console.WriteLine("\nEnter - повторить \nEsc - назад");
+            ConsoleKey ki = Console.ReadKey(true).Key;
+            if (ki == ConsoleKey.Enter)
+            {
+                ChangeDictionary();
+            }
+            else if (ki == ConsoleKey.Escape)
+            {
+                DictionaryMenu();
+            }
         }
-
-        static void menu()
+        static void ShowDictionary()
         {
             Console.Clear();
-            Console.WriteLine("Выберите действие");
-            Console.WriteLine("1 - Посчитать выражение");
-            Console.WriteLine("2 - Задать константы");
+            foreach (KeyValuePair<string, double> t in constants)
+            {
+                Console.WriteLine($"{t.Key} = {t.Value}");
+            }
+            Console.WriteLine("\nEsc - назад");
             ConsoleKey ki = Console.ReadKey(true).Key;
+            if (ki == ConsoleKey.Enter)
+            {
+                ShowDictionary();
+            }
+            else if (ki == ConsoleKey.Escape)
+            {
+                DictionaryMenu();
+            }
 
-            if (ki == ConsoleKey.NumPad1)
-            {
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("Введите пример на который желаете получить ответ");
-                test_expr(Console.ReadLine());
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("Нажмите Enter для продолжения");
-            }
-            else if (ki == ConsoleKey.NumPad2)
-            {
-                dictionary();
-            }
         }
-
-        //static void test_expr(string expr, double expected)
-        //{
-        //    ExpressionCalculator calculator = new ExpressionCalculator(expr);
-        //    double evaluated = calculator.Calculate();
-        //    if (evaluated != expected)
-        //    {
-        //        Console.ForegroundColor = ConsoleColor.Red;
-        //        Console.WriteLine($"[FAILED] {expr} != {expected}");
-        //    }
-        //    else
-        //    {
-        //        Console.ForegroundColor = ConsoleColor.Green;
-        //        Console.WriteLine($"[PASSED] {expr} = {expected}");
-        //    }
-        //}
     }
     
     class Token
