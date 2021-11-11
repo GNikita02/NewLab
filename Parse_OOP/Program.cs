@@ -5,7 +5,7 @@ using ParseResult = System.Tuple<Parse_OOP.Expression, int>;
 
 // Изменена система навигации
 // Добавлена функция удаления константы
-
+// fffffff
 namespace Parse_OOP
 {
     class Program
